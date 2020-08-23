@@ -1,5 +1,6 @@
 from tiles import Tile
 
+# colors in HSL format with values from 0 to 240 (MS Paint lul)
 colorsToTile = {
     (160, 0, 180): Tile.FLOOR,
     (160, 0, 120): Tile.WALL,

@@ -14,7 +14,6 @@ def run():
     img = Image.open(sys.argv[1])
     resized = img.resize((32, 32))
     hsv = resized.convert('HSV')
-    resized.save("img.png")
 
     tiles = getTiles(hsv)
     saveLevel(tiles)
@@ -29,6 +28,7 @@ def getTiles(img):
 
 
 def getColorDiff(c1, c2):
+    # TODO: improve this hack
     s = 0 if c2[1] < 30 else 255
 
     dh = min(abs(c1[0] - c2[0]), 255 - abs(c1[0] - c2[0]))
