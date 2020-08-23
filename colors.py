@@ -1,7 +1,7 @@
 from tiles import Tile
 
 # colors in HSL format with values from 0 to 240 (MS Paint lul)
-colorsToTile = {
+color_to_tile = {
     (160, 0, 180): Tile.FLOOR,
     (160, 0, 120): Tile.WALL,
     (130, 240, 120): Tile.WATER,
