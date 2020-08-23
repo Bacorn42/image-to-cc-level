@@ -13,7 +13,10 @@ def verify():
 def run():
     img = Image.open(sys.argv[1])
     resized = img.resize((32, 32))
-    tiles = getTiles(resized)
+    hsv = resized.convert('HSV')
+    resized.save("img.png")
+
+    tiles = getTiles(hsv)
     saveLevel(tiles)
 
 
@@ -26,22 +29,43 @@ def getTiles(img):
 
 
 def getColorDiff(c1, c2):
-    return (c1[0] - c2[0]) ** 2 + (c1[1] - c2[1]) ** 2 + (c1[2] - c2[2]) ** 2
+    s = 0 if c2[1] < 30 else 255
+
+    dh = min(abs(c1[0] - c2[0]), 255 - abs(c1[0] - c2[0]))
+    ds = c1[1] - s
+    dv = c1[2] - c2[2]
+
+    if s == 0:
+        dh = 170
+
+    return (dh**2 * 0.15) + (ds**2 * 0.8) + (dv**2 * 0.05)
 
 
 def getClosestTile(imgColor):
     bestDiff = sys.maxsize
     bestTile = None
     for color in colorsToTile:
-        diff = getColorDiff(color, imgColor)
+        diff = getColorDiff(HSLtoHSV(color), imgColor)
         if diff < bestDiff:
             bestDiff = diff
             bestTile = colorsToTile.get(color)
     return bestTile
 
 
+def HSLtoHSV(hsl):
+    h, s, l = (hsl[0] * 255/240, hsl[1]/240, hsl[2]/240)
+
+    newH = h
+    newV = l + s * min(l, 1 - l)
+    newS = 0 if newV == 0 else 2 * (1 - l/newV)
+
+    return (newH, newS * 255, newV * 255)
+
+
 def saveLevel(tiles):
-    file = open("level.dat", "wb")
+    filename = "level.dat" if len(sys.argv) < 3 else sys.argv[2]
+
+    file = open(filename, "wb")
     file.write((0x0002AAAC).to_bytes(4, byteorder="little"))  # magic number
     # number of levels = 1
     file.write((0x0001).to_bytes(2, byteorder="little"))
@@ -68,7 +92,7 @@ def saveLevel(tiles):
     file.write(b"\0")  # hint
     file.write((0x06).to_bytes(1, byteorder="little"))  # field 6
     file.write((0x05).to_bytes(1, byteorder="little"))  # password length
-    file.write(b"BDHP\0")  # password
+    file.write((0xDBDDD1C900).to_bytes(5, byteorder="big"))  # password BDHP
     file.close()
 
 
