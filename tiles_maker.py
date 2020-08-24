@@ -3,12 +3,17 @@ from PIL import Image
 from colors import color_to_tile
 
 
-def make_tiles(img_path):
-    img = Image.open(img_path)
-    resized = img.resize((32, 32))
-    hsv = resized.convert('HSV')
+def make_tiles(img_paths):
+    tiles = []
+    for index, img_path in enumerate(img_paths, start=1):
+        img = Image.open(img_path)
+        resized = img.resize((32, 32))
+        hsv = resized.convert('HSV')
 
-    return get_tiles(hsv)
+        tiles.append(get_tiles(hsv))
+        print("%d/%d" % (index, len(img_paths)))
+
+    return tiles
 
 
 def get_tiles(img):

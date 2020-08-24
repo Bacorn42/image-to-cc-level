@@ -1,28 +1,28 @@
 import sys
 
 
-# TODO: possibly multiple levels in a set
-def save_level(tiles):
-    filename = "level.dat" if len(sys.argv) < 3 else sys.argv[2]
+def save_levels(filename, tiles):
+    if filename == None:
+        filename = "level.dat"
     file = open(filename, "wb")
     write_set(file, tiles)
     file.close()
 
 
 def write_set(file, tiles):
-    write_set_data(file)
-    write_level(file, tiles)
+    write_set_data(file, len(tiles))
+    for level_number, level_tiles in enumerate(tiles, start=1):
+        write_level(file, level_tiles, level_number)
 
 
-def write_set_data(file):
+def write_set_data(file, levels):
     file.write((0x0002AAAC).to_bytes(4, byteorder="little"))  # magic number
-    # number of levels = 1
-    file.write((1).to_bytes(2, byteorder="little"))
+    file.write((levels).to_bytes(2, byteorder="little"))  # number of levels
 
 
-def write_level(file, tiles):
+def write_level(file, tiles, level_number):
     layer = get_layer(tiles)
-    write_level_info(file, len(layer))
+    write_level_info(file, len(layer), level_number)
     write_layers(file, layer)
     write_level_data(file)
 
@@ -44,9 +44,9 @@ def get_layer(tiles):
     return layer
 
 
-def write_level_info(file, level_size):
+def write_level_info(file, level_size, level_number):
     file.write((47 + level_size).to_bytes(2, byteorder="little"))
-    file.write((1).to_bytes(2, byteorder="little"))  # level number = 1
+    file.write((level_number).to_bytes(2, byteorder="little"))  # level number
     file.write((0).to_bytes(2, byteorder="little"))  # time = 0
     file.write((0).to_bytes(2, byteorder="little"))  # chips = 0
 
