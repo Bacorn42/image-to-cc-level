@@ -24,3 +24,6 @@ class Tile(Enum):
     RED_KEY = 0x65
     GREEN_KEY = 0x66
     YELLOW_KEY = 0x67
+
+    def isTransparent(self):
+        return self.value >= 0x48

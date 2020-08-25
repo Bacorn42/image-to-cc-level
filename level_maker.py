@@ -21,9 +21,10 @@ def write_set_data(file, levels):
 
 
 def write_level(file, tiles, level_number):
-    layer = get_layer(tiles)
-    write_level_info(file, len(layer), level_number)
-    write_layers(file, layer)
+    layer_fg = get_layer([tile[0] for tile in tiles])
+    layer_bg = get_layer([tile[1] for tile in tiles])
+    write_level_info(file, len(layer_fg) + len(layer_bg), level_number)
+    write_layers(file, layer_fg, layer_bg)
     write_level_data(file)
 
 
@@ -45,21 +46,22 @@ def get_layer(tiles):
 
 
 def write_level_info(file, level_size, level_number):
-    file.write((47 + level_size).to_bytes(2, byteorder="little"))
+    file.write((32 + level_size).to_bytes(2, byteorder="little"))
     file.write((level_number).to_bytes(2, byteorder="little"))  # level number
     file.write((0).to_bytes(2, byteorder="little"))  # time = 0
     file.write((0).to_bytes(2, byteorder="little"))  # chips = 0
 
 
-def write_layers(file, layer):
+def write_layers(file, layer_fg, layer_bg):
     file.write((1).to_bytes(2, byteorder="little"))  # map detail
-    file.write((len(layer)).to_bytes(2, byteorder="little"))  # first layer
-    for byte in layer:
+    file.write((len(layer_fg)).to_bytes(
+        2, byteorder="little"))  # first layer_fg
+    for byte in layer_fg:
         file.write(byte.to_bytes(1, byteorder="little"))
-    file.write((15).to_bytes(2, byteorder="little"))  # second layer
-    # empty bg layer
-    file.write((0xFFFF00FFFF00FFFF00FFFF00FF0400).to_bytes(
-        15, byteorder="big"))
+    file.write((len(layer_bg)).to_bytes(
+        2, byteorder="little"))  # first layer_bg
+    for byte in layer_bg:
+        file.write(byte.to_bytes(1, byteorder="little"))
 
 
 def write_level_data(file):

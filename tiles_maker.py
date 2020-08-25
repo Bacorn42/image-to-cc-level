@@ -1,6 +1,7 @@
 import sys
 from PIL import Image
 from colors import color_to_tile
+from tiles import Tile
 
 
 def make_tiles(img_paths):
@@ -30,12 +31,14 @@ def get_closest_tile(img_color):
         if diff < best_diff:
             best_diff = diff
             best_tile = color_to_tile.get(color)
-    return best_tile
+    if type(best_tile) == tuple:
+        return best_tile
+    return (best_tile, Tile.FLOOR)
 
 
+# TODO: improve this hack
 def get_color_diff(c1, c2):
-    # TODO: improve this hack
-    s = 0 if c2[1] < 30 else 255
+    s = 0 if c2[1] < 25 else (128 if c2[1] < 100 else 255)
 
     dh = min(abs(c1[0] - c2[0]), 255 - abs(c1[0] - c2[0]))
     ds = c1[1] - s
@@ -44,7 +47,7 @@ def get_color_diff(c1, c2):
     if s == 0:
         dh = 170
 
-    return (dh**2 * 0.15) + (ds**2 * 0.8) + (dv**2 * 0.05)
+    return (dh**2 * 0.17) + (ds**2 * 0.8) + (dv**2 * 0.03)
 
 
 def HSL_to_HSV(hsl):
