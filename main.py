@@ -14,7 +14,8 @@ def verify(args):
 
 
 def run(args):
-    tiles = make_tiles(args.images)
+    format = "RGB" if args.rgb else "HSV"
+    tiles = make_tiles(args.images, format)
     save_levels(args.o, tiles)
 
 
@@ -22,6 +23,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("images", nargs="+", help="image files")
     parser.add_argument("-o", help="output file", metavar="output")
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("--rgb", help="RGB format", action="store_true")
+    group.add_argument("--hsv", help="HSV format (default)",
+                       action="store_false")
     args = parser.parse_args()
 
     if verify(args):
