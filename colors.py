@@ -18,6 +18,8 @@ def RGB_to_HSV(color):
             h = 60 * ((b_norm - r_norm)/d + 2)
         else:
             h = 60 * ((r_norm - g_norm)/d + 4)
+    if h < 0:
+        h = 360 - h
 
     s = 0
     if c_max != 0:
@@ -27,6 +29,17 @@ def RGB_to_HSV(color):
 
     return (h * 255/360, s * 255, v * 255)
 
+
+def RGB_to_YCbCr(color):
+    r = color[0]
+    g = color[1]
+    b = color[2]
+
+    Y  = r *  0.29900 + g *  0.58700 + b *  0.11400
+    Cb = r * -0.16874 + g * -0.33126 + b *  0.50000 + 128
+    Cr = r *  0.50000 + g * -0.41869 + b * -0.08131 + 128
+
+    return (Y, Cb, Cr)
 
 color_to_tile_rgb = {
     (255, 255, 255): Tile.FLOOR,
@@ -66,3 +79,7 @@ for c, tile in list(color_to_tile_rgb.items()):
 color_to_tile_hsv = {}
 for c, tile in list(color_to_tile_rgb.items()):
     color_to_tile_hsv[RGB_to_HSV(c)] = tile
+
+color_to_tile_ycbcr = {}
+for c, tile in list(color_to_tile_rgb.items()):
+    color_to_tile_ycbcr[RGB_to_YCbCr(c)] = tile

@@ -1,7 +1,7 @@
 import sys
 from math import sqrt
 from PIL import Image
-from colors import color_to_tile_rgb, color_to_tile_hsv
+from colors import color_to_tile_rgb, color_to_tile_hsv, color_to_tile_ycbcr
 from tiles import Tile
 
 
@@ -43,6 +43,8 @@ def get_color_to_tile(format):
         return color_to_tile_rgb
     elif format == "HSV":
         return color_to_tile_hsv
+    elif format == "YCbCr":
+        return color_to_tile_ycbcr
     else:
         print("Error: Unknown format")
         sys.exit()
@@ -53,6 +55,8 @@ def get_color_diff(color, img_color, format):
         return get_color_diff_rgb(color, img_color)
     elif format == "HSV":
         return get_color_diff_hsv(color, img_color)
+    elif format == "YCbCr":
+        return get_color_diff_ycbcr(color, img_color)
     else:
         print("Error: Unknown format")
         sys.exit()
@@ -80,3 +84,11 @@ def get_color_diff_hsv(c1, c2):
         dh = 0
 
     return (dh**2 * 0.17) + (ds**2 * 0.8) + (dv**2 * 0.03)
+
+
+def get_color_diff_ycbcr(c1, c2):
+    dy = c1[0] - c2[0]
+    dcb = c1[1] - c2[1]
+    dcr = c1[2] - c2[2]
+
+    return dy**2 + dcb**2 + dcr**2
