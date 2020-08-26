@@ -35,11 +35,12 @@ def RGB_to_YCbCr(color):
     g = color[1]
     b = color[2]
 
-    Y  = r *  0.29900 + g *  0.58700 + b *  0.11400
-    Cb = r * -0.16874 + g * -0.33126 + b *  0.50000 + 128
-    Cr = r *  0.50000 + g * -0.41869 + b * -0.08131 + 128
+    Y = r * 0.29900 + g * 0.58700 + b * 0.11400
+    Cb = r * -0.16874 + g * -0.33126 + b * 0.50000 + 128
+    Cr = r * 0.50000 + g * -0.41869 + b * -0.08131 + 128
 
     return (Y, Cb, Cr)
+
 
 color_to_tile_rgb = {
     (255, 255, 255): Tile.FLOOR,
@@ -55,7 +56,7 @@ color_to_tile_rgb = {
     (192, 64, 64): Tile.RED_DOOR,
     (64, 192, 64): Tile.GREEN_DOOR,
     (192, 192, 64): Tile.YELLOW_DOOR,
-    (32, 96, 96): Tile.FAKE_WALL,
+    (0, 128, 128): Tile.FAKE_WALL,
     (0, 0, 0): Tile.GRAVEL,
     (160, 160, 160): Tile.RECESSED_WALL,
     (255, 0, 255): Tile.PINK_BALL,
@@ -74,6 +75,10 @@ for c, tile in list(color_to_tile_rgb.items()):
         color_to_tile_rgb[tuple(
             [v + (avg - v)/2 for v in c])] = (tile, Tile.WALL)
         color_to_tile_rgb[tuple([v/6 for v in c])] = (tile, Tile.GRAVEL)
+        color_to_tile_rgb[(c[0] / 3 * 2.5, c[1] / 3, c[2] / 3)
+                          ] = (tile, Tile.DIRT)
+        color_to_tile_rgb[(c[0] / 3, c[1] / 3 * 2, c[2] / 3 * 2)
+                          ] = (tile, Tile.FAKE_WALL)
 
 
 color_to_tile_hsv = {}
