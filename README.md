@@ -6,4 +6,4 @@ It works by resizing an image to size 32x32 and then it approximates the colors 
 
 ## Usage
 
-`usage: main.py [-h] [-o output] [--hsv | --rgb | --ycbcr] images [images ...]`
+`usage: main.py [-h] [-o output] [--hsv | --rgb | --ycbcr | --gray] images [images ...]`

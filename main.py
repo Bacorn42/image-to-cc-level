@@ -14,9 +14,20 @@ def verify(args):
 
 
 def run(args):
-    format = "RGB" if args.rgb else ("YCbCr" if args.ycbcr else "HSV")
+    format = get_format(args)
     tiles = make_tiles(args.images, format)
     save_levels(args.o, tiles)
+
+
+def get_format(args):
+    if args.rgb:
+        return "RGB"
+    elif args.ycbcr:
+        return "YCbCr"
+    elif args.gray:
+        return "L"
+    else:
+        return "HSV"
 
 
 if __name__ == '__main__':
@@ -28,6 +39,7 @@ if __name__ == '__main__':
                        action="store_false")
     group.add_argument("--rgb", help="RGB format", action="store_true")
     group.add_argument("--ycbcr", help="YCbCr format", action="store_true")
+    group.add_argument("--gray", help="Grayscale format", action="store_true")
     args = parser.parse_args()
 
     if verify(args):

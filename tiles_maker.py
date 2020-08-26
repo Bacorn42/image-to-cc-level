@@ -41,7 +41,7 @@ def get_closest_tile(img_color, format):
 def get_color_to_tile(format):
     if format == "RGB":
         return color_to_tile_rgb
-    elif format == "HSV":
+    elif format == "HSV" or format == "L":
         return color_to_tile_hsv
     elif format == "YCbCr":
         return color_to_tile_ycbcr
@@ -53,7 +53,7 @@ def get_color_to_tile(format):
 def get_color_diff(color, img_color, format):
     if format == "RGB":
         return get_color_diff_rgb(color, img_color)
-    elif format == "HSV":
+    elif format == "HSV" or format == "L":
         return get_color_diff_hsv(color, img_color)
     elif format == "YCbCr":
         return get_color_diff_ycbcr(color, img_color)
@@ -73,6 +73,7 @@ def get_color_diff_rgb(c1, c2):
 
 # TODO: improve this hack
 def get_color_diff_hsv(c1, c2):
+    c2 = get_tuple(c2)
     s = 0 if c2[1] < 25 else (128 if c2[1] < 100 else 255)
 
     dh = min(abs(c1[0] - c2[0]), 255 - abs(c1[0] - c2[0]))
@@ -84,6 +85,12 @@ def get_color_diff_hsv(c1, c2):
         dh = 0
 
     return (dh**2 * 0.17) + (ds**2 * 0.8) + (dv**2 * 0.03)
+
+
+def get_tuple(c):
+    if type(c) == int:
+        return (0, 0, c)
+    return c
 
 
 def get_color_diff_ycbcr(c1, c2):
