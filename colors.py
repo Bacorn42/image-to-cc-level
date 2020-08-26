@@ -54,10 +54,6 @@ color_to_tile_rgb = {
     (255, 255, 80): Tile.YELLOW_KEY,
 }
 
-color_to_tile_hsv = {}
-for c, tile in list(color_to_tile_rgb.items()):
-    color_to_tile_hsv[RGB_to_HSV(c)] = tile
-
 # TODO: better balance background layer usage
 for c, tile in list(color_to_tile_rgb.items()):
     if(tile.isTransparent()):
@@ -66,7 +62,7 @@ for c, tile in list(color_to_tile_rgb.items()):
             [v + (avg - v)/2 for v in c])] = (tile, Tile.WALL)
         color_to_tile_rgb[tuple([v/6 for v in c])] = (tile, Tile.GRAVEL)
 
-for c, tile in list(color_to_tile_hsv.items()):
-    if(tile.isTransparent()):
-        color_to_tile_hsv[(c[0], c[1] - 120, c[2] - 20)] = (tile, Tile.WALL)
-        color_to_tile_hsv[(c[0], c[1] - 120, 30)] = (tile, Tile.GRAVEL)
+
+color_to_tile_hsv = {}
+for c, tile in list(color_to_tile_rgb.items()):
+    color_to_tile_hsv[RGB_to_HSV(c)] = tile
