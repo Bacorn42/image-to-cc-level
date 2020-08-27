@@ -1,33 +1,33 @@
 import sys
 from math import sqrt
 from PIL import Image
-from colors import color_to_tile_rgb, color_to_tile_hsv, color_to_tile_ycbcr
+from colors import get_color_to_tile
 from tiles import Tile
 
 
 def make_tiles(img_paths, format):
     tiles = []
+    color_to_tile = get_color_to_tile(format)
     for index, img_path in enumerate(img_paths, start=1):
         img = Image.open(img_path)
         resized = img.resize((32, 32))
         converted = resized.convert(format)
 
-        tiles.append(get_tiles(converted, format))
+        tiles.append(get_tiles(converted, format, color_to_tile))
         print("%d/%d" % (index, len(img_paths)))
 
     return tiles
 
 
-def get_tiles(img, format):
-    return [get_closest_tile(img.getpixel((x, y)), format)
+def get_tiles(img, format, color_to_tile):
+    return [get_closest_tile(img.getpixel((x, y)), format, color_to_tile)
             for y in range(img.height)
             for x in range(img.width)]
 
 
-def get_closest_tile(img_color, format):
+def get_closest_tile(img_color, format, color_to_tile):
     best_diff = sys.maxsize
     best_tile = None
-    color_to_tile = get_color_to_tile(format)
     for color in color_to_tile:
         diff = get_color_diff(color, img_color, format)
         if diff < best_diff:
@@ -36,18 +36,6 @@ def get_closest_tile(img_color, format):
     if type(best_tile) == tuple:
         return best_tile
     return (best_tile, Tile.FLOOR)
-
-
-def get_color_to_tile(format):
-    if format == "RGB":
-        return color_to_tile_rgb
-    elif format == "HSV" or format == "L":
-        return color_to_tile_hsv
-    elif format == "YCbCr":
-        return color_to_tile_ycbcr
-    else:
-        print("Error: Unknown format")
-        sys.exit()
 
 
 def get_color_diff(color, img_color, format):

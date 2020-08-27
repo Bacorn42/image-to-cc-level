@@ -1,3 +1,4 @@
+import sys
 from tiles import Tile
 
 
@@ -81,10 +82,31 @@ for c, tile in list(color_to_tile_rgb.items()):
                           ] = (tile, Tile.FAKE_WALL)
 
 
-color_to_tile_hsv = {}
-for c, tile in list(color_to_tile_rgb.items()):
-    color_to_tile_hsv[RGB_to_HSV(c)] = tile
+def get_color_to_tile(format):
+    if format == "RGB":
+        return get_color_to_tile_rgb()
+    elif format == "HSV" or format == "L":
+        return get_color_to_tile_hsv()
+    elif format == "YCbCr":
+        return get_color_to_tile_ycbcr()
+    else:
+        print("Error: Unknown format")
+        sys.exit()
 
-color_to_tile_ycbcr = {}
-for c, tile in list(color_to_tile_rgb.items()):
-    color_to_tile_ycbcr[RGB_to_YCbCr(c)] = tile
+
+def get_color_to_tile_rgb():
+    return color_to_tile_rgb
+
+
+def get_color_to_tile_hsv():
+    color_to_tile_hsv = {}
+    for c, tile in list(color_to_tile_rgb.items()):
+        color_to_tile_hsv[RGB_to_HSV(c)] = tile
+    return color_to_tile_hsv
+
+
+def get_color_to_tile_ycbcr():
+    color_to_tile_ycbcr = {}
+    for c, tile in list(color_to_tile_rgb.items()):
+        color_to_tile_ycbcr[RGB_to_YCbCr(c)] = tile
+    return color_to_tile_ycbcr
